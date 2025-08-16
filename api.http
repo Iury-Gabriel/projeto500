@@ -1,0 +1,9 @@
+POST http://localhost:3000/criarusuario
+Content-Type: application/json
+
+{
+    "nome": "João Silva",
+    "email": "email2@email.com",
+    "produto1": true,
+    "produto3": true
+}

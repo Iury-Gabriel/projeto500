@@ -2,7 +2,7 @@ const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 
 const app = express();
-const prisma = new PrismaClient();
+const prismaClient = new PrismaClient();
 
 app.use(express.json());
 
@@ -12,27 +12,33 @@ app.get('/', (req, res) => {
 });
 
 app.post('/criarusuario', async (req, res) => {
-  const { nome, email } = req.body;
-  if (nome == "" || !email) {
-    res.json({ message: "Preencha todos os campos fornecidos" })
+  const { nome, email, ...produtos } = req.body;
+
+  if (!nome || !email) {
+    return res.json({ message: "Preencha todos os campos fornecidos" });
   }
+
   const verifyUserExists = await prismaClient.moldes.findUnique({
-    where: {
-      email
-    }
-  })
+    where: { email }
+  });
 
   if (verifyUserExists) {
-    res.json({ message: "O email já existe" })
+    return res.json({ message: "O email já existe" });
   }
-  const user = await prismaClient.moldes.create({
-    data: {
-      nome, email
+
+  // monta objeto dinamicamente
+  const data = { name: nome, email };
+  for (const [key, value] of Object.entries(produtos)) {
+    if (value) {
+      data[key] = value;
     }
-  })
+  }
+
+  const user = await prismaClient.moldes.create({ data });
 
   res.json(user);
 });
+
 
 app.get('/buscardaados', async (req, res) => {
   const { email } = req.body;

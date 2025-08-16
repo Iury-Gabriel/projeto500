@@ -11,22 +11,21 @@ datasource db {
 }
 
 model Moldes {
-  id    Int @id @default(autoincrement())
-  name  String
-  email String  @unique
-  produto1 Boolean
-  produto2 Boolean
-  produto3 Boolean
-  produto4 Boolean
-  produto5 Boolean
-  produto6 Boolean
-  produto7 Boolean
-  produto8 Boolean
-  produto9 Boolean
-  produto10 Boolean
-  produto11 Boolean
-  produto12 Boolean
-  produto13 Boolean
-  produto14 Boolean
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  produto1  Boolean?
+  produto2  Boolean?
+  produto3  Boolean?
+  produto4  Boolean?
+  produto5  Boolean?
+  produto6  Boolean?
+  produto7  Boolean?
+  produto8  Boolean?
+  produto9  Boolean?
+  produto10 Boolean?
+  produto11 Boolean?
+  produto12 Boolean?
+  produto13 Boolean?
+  produto14 Boolean?
 }
-
