@@ -1,4 +1,4 @@
-POST http://localhost:3000/criarusuario
+POST https://teste-kg4u.onrender.com/criarusuario
 Content-Type: application/json
 
 {
@@ -6,4 +6,269 @@ Content-Type: application/json
     "email": "email2@email.com",
     "produto1": true,
     "produto3": true
+}
+
+###
+
+POST http://localhost:3000/processar-compra
+Content-Type: application/json
+
+{
+    "email": "email2@email.com",
+    "items": {
+          "data": [
+            {
+              "id": 181407161,
+              "product_id": 39320222,
+              "sku_id": 263084029,
+              "bundle_id": null,
+              "bundle_name": null,
+              "freebie_id": null,
+              "price_cost": 0,
+              "price": 27.9,
+              "item_sku": "B6VPC7C5V",
+              "quantity": 1,
+              "shipment_cost": 0,
+              "gift": false,
+              "gift_value": 0,
+              "has_recomm": 0,
+              "customizations": [],
+              "is_digital": true,
+              "sku": {
+                "data": {
+                  "id": 263084029,
+                  "product_id": 39320222,
+                  "seller_id": null,
+                  "sku": "B6VPC7C5V",
+                  "token": "NFS5W5EYL3",
+                  "erp_id": null,
+                  "blocked_sale": false,
+                  "barcode": null,
+                  "title": "+45.000 ARTES PARA CANECAS PERSONALIZADAS",
+                  "availability": 0,
+                  "availability_soldout": -1,
+                  "days_availability_formated": "Imediata",
+                  "price_cost": 0,
+                  "price_sale": 147.9,
+                  "price_discount": 27.9,
+                  "width": 1,
+                  "height": 1,
+                  "length": 1,
+                  "weight": 1,
+                  "quantity_managed": false,
+                  "variations": [],
+                  "combinations": "263084029",
+                  "order": 0,
+                  "total_in_stock": 0,
+                  "total_orders": null,
+                  "allow_sell_without_customization": false,
+                  "image_reference_sku_id": null,
+                  "purchase_url": "https://artes-para-caneca.pay.yampi.com.br/r/NFS5W5EYL3",
+                  "created_at": {
+                    "date": "2025-03-05 12:56:14.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "updated_at": {
+                    "date": "2025-06-14 17:15:02.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "customizations": {
+                    "data": []
+                  }
+                }
+              }
+            },
+            {
+              "id": 181407162,
+              "product_id": 39474881,
+              "sku_id": 263983549,
+              "bundle_id": null,
+              "bundle_name": null,
+              "freebie_id": 2895,
+              "price_cost": 0,
+              "price": 0,
+              "item_sku": "EWLE5GQRH",
+              "quantity": 1,
+              "shipment_cost": 0,
+              "gift": false,
+              "gift_value": 0,
+              "has_recomm": 0,
+              "customizations": [],
+              "is_digital": true,
+              "sku": {
+                "data": {
+                  "id": 263983549,
+                  "product_id": 39474881,
+                  "seller_id": null,
+                  "sku": "EWLE5GQRH",
+                  "token": "4YWSZF8G16",
+                  "erp_id": null,
+                  "blocked_sale": false,
+                  "barcode": null,
+                  "title": "ARTES PARA CHINELOS E SANDÁLIAS",
+                  "availability": 0,
+                  "availability_soldout": -1,
+                  "days_availability_formated": "Imediata",
+                  "price_cost": 0,
+                  "price_sale": 27.9,
+                  "price_discount": 7.9,
+                  "width": 1,
+                  "height": 1,
+                  "length": 1,
+                  "weight": 1,
+                  "quantity_managed": false,
+                  "variations": [],
+                  "combinations": "263983549",
+                  "order": 0,
+                  "total_in_stock": 0,
+                  "total_orders": null,
+                  "allow_sell_without_customization": false,
+                  "image_reference_sku_id": null,
+                  "purchase_url": "https://artes-para-caneca.pay.yampi.com.br/r/4YWSZF8G16",
+                  "created_at": {
+                    "date": "2025-03-12 00:29:09.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "updated_at": {
+                    "date": "2025-03-12 01:01:23.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "customizations": {
+                    "data": []
+                  }
+                }
+              }
+            },
+            {
+              "id": 181407163,
+              "product_id": 41142429,
+              "sku_id": 274059233,
+              "bundle_id": null,
+              "bundle_name": null,
+              "freebie_id": 2894,
+              "price_cost": 0,
+              "price": 0,
+              "item_sku": "J47AS59AY",
+              "quantity": 1,
+              "shipment_cost": 0,
+              "gift": false,
+              "gift_value": 0,
+              "has_recomm": 0,
+              "customizations": [],
+              "is_digital": true,
+              "sku": {
+                "data": {
+                  "id": 274059233,
+                  "product_id": 41142429,
+                  "seller_id": null,
+                  "sku": "J47AS59AY",
+                  "token": "PA1JMQOAB1",
+                  "erp_id": null,
+                  "blocked_sale": false,
+                  "barcode": null,
+                  "title": "ARTES PARA SQUEEZES",
+                  "availability": 0,
+                  "availability_soldout": -1,
+                  "days_availability_formated": "Imediata",
+                  "price_cost": 0,
+                  "price_sale": 14.9,
+                  "price_discount": 0,
+                  "width": 1,
+                  "height": 1,
+                  "length": 1,
+                  "weight": 1,
+                  "quantity_managed": false,
+                  "variations": [],
+                  "combinations": "274059233",
+                  "order": 0,
+                  "total_in_stock": 0,
+                  "total_orders": null,
+                  "allow_sell_without_customization": false,
+                  "image_reference_sku_id": null,
+                  "purchase_url": "https://artes-para-caneca.pay.yampi.com.br/r/PA1JMQOAB1",
+                  "created_at": {
+                    "date": "2025-06-21 15:12:49.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "updated_at": {
+                    "date": "2025-06-21 16:36:09.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "customizations": {
+                    "data": []
+                  }
+                }
+              }
+            },
+            {
+              "id": 181407164,
+              "product_id": 39392754,
+              "sku_id": 263505734,
+              "bundle_id": null,
+              "bundle_name": null,
+              "freebie_id": null,
+              "price_cost": 0,
+              "price": 19.9,
+              "item_sku": "EP2PRG7RZ",
+              "quantity": 1,
+              "shipment_cost": 0,
+              "gift": false,
+              "gift_value": 0,
+              "has_recomm": 0,
+              "customizations": [],
+              "is_digital": true,
+              "sku": {
+                "data": {
+                  "id": 263505734,
+                  "product_id": 39392754,
+                  "seller_id": null,
+                  "sku": "EP2PRG7RZ",
+                  "token": "GIY20ZCL4A",
+                  "erp_id": null,
+                  "blocked_sale": false,
+                  "barcode": null,
+                  "title": "KIT +40.000 ESTAMPAS PARA CAMISAS",
+                  "availability": 0,
+                  "availability_soldout": -1,
+                  "days_availability_formated": "Imediata",
+                  "price_cost": 0,
+                  "price_sale": 54.9,
+                  "price_discount": 19.9,
+                  "width": 1,
+                  "height": 1,
+                  "length": 1,
+                  "weight": 1,
+                  "quantity_managed": false,
+                  "variations": [],
+                  "combinations": "263505734",
+                  "order": 0,
+                  "total_in_stock": 0,
+                  "total_orders": null,
+                  "allow_sell_without_customization": false,
+                  "image_reference_sku_id": null,
+                  "purchase_url": "https://artes-para-caneca.pay.yampi.com.br/r/GIY20ZCL4A",
+                  "created_at": {
+                    "date": "2025-03-08 00:07:58.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "updated_at": {
+                    "date": "2025-05-28 13:34:14.000000",
+                    "timezone_type": 3,
+                    "timezone": "America/Sao_Paulo"
+                  },
+                  "customizations": {
+                    "data": []
+                  }
+                }
+              }
+            }
+          ]
+        }
 }
