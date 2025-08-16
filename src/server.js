@@ -40,8 +40,8 @@ app.post('/criarusuario', async (req, res) => {
 });
 
 
-app.get('/buscardaados', async (req, res) => {
-  const { email } = req.body;
+app.get('/buscardados/:email', async (req, res) => {
+  const { email } = req.params;
   const moldes = await prismaClient.moldes.findUnique({
     where: {
       email
