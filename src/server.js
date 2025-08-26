@@ -146,7 +146,7 @@ app.post('/processar-compra', async (req, res) => {
 
 
 // Iniciar servidor na porta 3000
-const PORT = 3000;
+const PORT = 3333;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
