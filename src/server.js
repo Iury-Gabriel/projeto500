@@ -1,9 +1,11 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const cors = require("cors")
 
 const app = express();
 const prismaClient = new PrismaClient();
 
+app.use(cors())
 app.use(express.json());
 
 // Rota teste
