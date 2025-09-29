@@ -17,6 +17,8 @@ app.post('/criarusuario', async (req, res) => {
   try {
     const { nome, email, items, ...produtos } = req.body;
 
+    console.log(req.body)
+
     if (!nome || !email) {
       return res.json({ message: "Preencha todos os campos fornecidos" });
     }
@@ -31,9 +33,9 @@ app.post('/criarusuario', async (req, res) => {
 
     // Lista dos SKUs reais de cada produto
     const produtosSku = {
-      produto1: "EWLE5GQRH",
-      produto2: "B6VPC7C5V",
-      produto3: "J47AS59AY"
+      produto1: "H6FQ4N3ME",
+      produto2: "NVS6XU3PS",
+      produto3: "QVZKXKSKQ"
     };
 
     // monta objeto dinamicamente com nome e email
@@ -108,20 +110,9 @@ app.post('/processar-compra', async (req, res) => {
 
     // Lista dos SKUs reais de cada produto
     const produtosSku = {
-      produto1: "EWLE5GQRH",
-      produto2: "B6VPC7C5V",
-      produto3: "SKU_PRODUTO_3",
-      produto4: "SKU_PRODUTO_4",
-      produto5: "SKU_PRODUTO_5",
-      produto6: "SKU_PRODUTO_6",
-      produto7: "SKU_PRODUTO_7",
-      produto8: "SKU_PRODUTO_8",
-      produto9: "SKU_PRODUTO_9",
-      produto10: "SKU_PRODUTO_10",
-      produto11: "J47AS59AY",
-      produto12: "EP2PRG7RZ",
-      produto13: "SKU_PRODUTO_13",
-      produto14: "SKU_PRODUTO_14"
+      produto1: "H6FQ4N3ME",
+      produto2: "NVS6XU3PS",
+      produto3: "QVZKXKSKQ"
     };
 
     // Busca usuário no banco

@@ -1,9 +1,5 @@
-GET http://localhost:3001/verificaremail
-Content-Type: application/json
+GET http://localhost:3001/buscardados/email3@email.com
 
-{
-    "email": "email3@email.com"
-}
 
 ###
 
