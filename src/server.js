@@ -14,52 +14,84 @@ app.get('/', (req, res) => {
 });
 
 app.post('/criarusuario', async (req, res) => {
-  const { nome, email, ...produtos } = req.body;
+  try {
+    const { nome, email, items, ...produtos } = req.body;
 
-  if (!nome || !email) {
-    return res.json({ message: "Preencha todos os campos fornecidos" });
-  }
-
-  const verifyUserExists = await prismaClient.moldes.findUnique({
-    where: { email }
-  });
-
-  if (verifyUserExists) {
-    return res.json({ message: "O email já existe" });
-  }
-
-  // monta objeto dinamicamente
-  const data = { name: nome, email };
-  for (const [key, value] of Object.entries(produtos)) {
-    if (value) {
-      data[key] = value;
+    if (!nome || !email) {
+      return res.json({ message: "Preencha todos os campos fornecidos" });
     }
+
+    const verifyUserExists = await prismaClient.resinas.findUnique({
+      where: { email }
+    });
+
+    if (verifyUserExists) {
+      return res.json({ message: "O email já existe" });
+    }
+
+    // Lista dos SKUs reais de cada produto
+    const produtosSku = {
+      produto1: "EWLE5GQRH",
+      produto2: "B6VPC7C5V",
+      produto3: "J47AS59AY"
+    };
+
+    // monta objeto dinamicamente com nome e email
+    const data = { name: nome, email };
+
+    // inclui produtos vindos direto do body
+    for (const [key, value] of Object.entries(produtos)) {
+      if (value) {
+        data[key] = value;
+      }
+    }
+
+    // Se vier items (compra) no body, processa também
+    if (items?.data?.length > 0) {
+      items.data.forEach(item => {
+        const sku = item?.item_sku;
+        if (sku) {
+          for (let key in produtosSku) {
+            if (sku === produtosSku[key]) {
+              data[key] = true; // já marca o produto como comprado
+            }
+          }
+        }
+      });
+    }
+
+    const user = await prismaClient.resinas.create({ data });
+
+    return res.json({
+      message: "Usuário criado com sucesso",
+      user
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro no servidor" });
   }
-
-  const user = await prismaClient.moldes.create({ data });
-
-  res.json(user);
 });
 
 
 app.get('/buscardados/:email', async (req, res) => {
   const { email } = req.params;
-  const moldes = await prismaClient.moldes.findUnique({
+  const resinas = await prismaClient.resinas.findUnique({
     where: {
       email
     }
   })
-  res.json(moldes);
+  res.json(resinas);
 });
 
-app.get('/verificaremail', async (req, res) => {
+app.post('/verificaremail', async (req, res) => {
   const { email } = req.body;
-  const moldes = await prismaClient.moldes.findUnique({
+  const resinas = await prismaClient.resinas.findUnique({
     where: {
       email
     }
   })
-  if (moldes) {
+  if (resinas) {
     res.json(true)
   } else {
     res.json(false)
@@ -93,7 +125,7 @@ app.post('/processar-compra', async (req, res) => {
     };
 
     // Busca usuário no banco
-    const user = await prismaClient.moldes.findUnique({
+    const user = await prismaClient.resinas.findUnique({
       where: { email }
     });
 
@@ -127,7 +159,7 @@ app.post('/processar-compra', async (req, res) => {
     }
 
     // Atualiza apenas os campos necessários
-    const userUpdated = await prismaClient.moldes.update({
+    const userUpdated = await prismaClient.resinas.update({
       where: { email },
       data: updateData
     });
