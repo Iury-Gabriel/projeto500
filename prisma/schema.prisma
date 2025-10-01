@@ -18,3 +18,14 @@ model Resinas {
   produto2 Boolean?
   produto3 Boolean?
 }
+
+model Canecas {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  produto1 Boolean?
+  produto2 Boolean?
+  produto3 Boolean?
+  produto4 Boolean?
+  produto5 Boolean?
+}
