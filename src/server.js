@@ -17,6 +17,8 @@ app.post('/criarusuario', async (req, res) => {
   try {
     const { nome, email, items, ...produtos } = req.body;
 
+    console.log(req.body)
+
     if (!nome || !email) {
       return res.json({ message: "Preencha todos os campos fornecidos" });
     }
@@ -29,31 +31,31 @@ app.post('/criarusuario', async (req, res) => {
       return res.json({ message: "O email já existe" });
     }
 
-    // Mapeia os produtos reais pelos product_id
-    const produtosIds = {
-      produto1: 26342878, // Escola do Zero ao Lucro com Resina
-      produto2: 26343002, // Modelos Exclusivos de RESINA
-      produto3: 26343051  // Fornecedores de Resina
+    // Lista dos SKUs reais de cada produto
+    const produtosSku = {
+      produto1: "H6FQ4N3ME",
+      produto2: "NVS6XU3PS",
+      produto3: "QVZKXKSKQ"
     };
 
     // monta objeto dinamicamente com nome e email
     const data = { name: nome, email };
 
-    // inclui produtos vindos direto do body (se tiver)
+    // inclui produtos vindos direto do body
     for (const [key, value] of Object.entries(produtos)) {
       if (value) {
         data[key] = value;
       }
     }
 
-    // agora checa os items recebidos
-    if (Array.isArray(items) && items.length > 0) {
-      items.forEach(item => {
-        const pid = item?.product_id;
-        if (pid) {
-          for (let key in produtosIds) {
-            if (pid === produtosIds[key]) {
-              data[key] = true; // marca como comprado
+    // Se vier items (compra) no body, processa também
+    if (items?.data?.length > 0) {
+      items.data.forEach(item => {
+        const sku = item?.item_sku;
+        if (sku) {
+          for (let key in produtosSku) {
+            if (sku === produtosSku[key]) {
+              data[key] = true; // já marca o produto como comprado
             }
           }
         }
@@ -106,11 +108,11 @@ app.post('/processar-compra', async (req, res) => {
       return res.status(400).json({ message: "Email e items são obrigatórios" });
     }
 
-    // Mapeia os produtos reais pelos product_id
-    const produtosIds = {
-      produto1: 26342878, // Escola do Zero ao Lucro com Resina
-      produto2: 26343002, // Modelos Exclusivos de RESINA
-      produto3: 26343051  // Fornecedores de Resina
+    // Lista dos SKUs reais de cada produto
+    const produtosSku = {
+      produto1: "H6FQ4N3ME",
+      produto2: "NVS6XU3PS",
+      produto3: "QVZKXKSKQ"
     };
 
     // Busca usuário no banco
@@ -122,26 +124,24 @@ app.post('/processar-compra', async (req, res) => {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
-    // Objeto para atualizar os produtos
+    // Objeto para atualizar somente os produtos encontrados
     let updateData = {};
 
-    if (Array.isArray(items) && items.length > 0) {
-      items.forEach(item => {
-        const pid = item?.product_id;
-        if (pid) {
-          for (let key in produtosIds) {
-            if (pid === produtosIds[key]) {
-              // Só atualiza se ainda não for true
-              if (user[key] !== true) {
-                updateData[key] = true;
-              }
+    items.data.forEach(item => {
+      const sku = item?.item_sku;
+      if (sku) {
+        for (let key in produtosSku) {
+          if (sku === produtosSku[key]) {
+            // só atualiza se ainda não for true no banco
+            if (user[key] !== true) {
+              updateData[key] = true;
             }
           }
         }
-      });
-    }
+      }
+    });
 
-    // Se não tem nada pra atualizar
+    // Se não teve nada pra atualizar
     if (Object.keys(updateData).length === 0) {
       return res.json({
         message: "Nenhum produto novo para atualizar",
@@ -149,7 +149,7 @@ app.post('/processar-compra', async (req, res) => {
       });
     }
 
-    // Atualiza somente os campos necessários
+    // Atualiza apenas os campos necessários
     const userUpdated = await prismaClient.resinas.update({
       where: { email },
       data: updateData
