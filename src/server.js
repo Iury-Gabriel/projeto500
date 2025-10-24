@@ -446,13 +446,20 @@ app.post("/criar-pedido", async (req, res) => {
         month: cartao.month,
         year: cartao.year,
         document_number: cpf,
-        name: cartao.name || nome,
-        installments: cartao.installments || 1,
+        name: nome,
+        installments: 1,
         soft_descriptor: "CANECA"
       }
     }
   })
 });
+      console.log(order_id),
+      console.log(customer_id);
+      console.log(cartao);
+      console.log(cpf);
+      console.log(nome);
+
+
 
 const pagamento = await pagamentoRes.json();
       console.log(pagamento);
