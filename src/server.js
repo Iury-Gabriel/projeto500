@@ -432,7 +432,7 @@ app.post("/criar-pedido", async (req, res) => {
       );
       pagamentoData = pagamento?.data?.pix_emv || null;
     } else if (metodo_pagamento === "credito" && cartao) {
-      const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/creditcard", {
+      const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/credit-card", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
