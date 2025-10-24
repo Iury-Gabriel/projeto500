@@ -332,9 +332,10 @@ async function postJSON(url, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  res = await res.json();
-  console.log(res);
-  return await res.json();
+
+  const data = await res.json();
+  console.log(data);
+  return data;
 }
 
 app.post("/criar-pedido", async (req, res) => {
