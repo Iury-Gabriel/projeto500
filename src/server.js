@@ -323,6 +323,147 @@ app.post('/canecas/processar-compra', async (req, res) => {
   }
 });
 
+const ACCESS_TOKEN = "E88CFF84-F81ACF6A-985DEB1C-007B9CCA";
+
+// função auxiliar pra requisições
+async function postJSON(url, body) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return await res.json();
+}
+
+app.post("/criar-pedido", async (req, res) => {
+  try {
+    const {
+      nome,
+      email,
+      cpf,
+      numero,
+      metodo_pagamento, // "pix" ou "credito"
+      orderbump1,
+      orderbump2,
+      orderbump3,
+      orderbump4,
+      cartao, // se for crédito: { number, cvv, month, year, name, installments }
+    } = req.body;
+
+    // --- 1️⃣ Criar cliente ---
+    const [firstname, ...rest] = nome.split(" ");
+    const lastname = rest.join(" ") || firstname;
+
+    const cliente = await postJSON(
+      "https://admin.appmax.com.br/api/v3/customer",
+      {
+        "access-token": ACCESS_TOKEN,
+        firstname,
+        lastname,
+        email,
+        telephone: numero,
+      }
+    );
+
+    const customer_id = cliente?.data?.id;
+    if (!customer_id) throw new Error("Erro ao criar cliente");
+
+    // --- 2️⃣ Calcular total ---
+    let total = 6.9;
+    const produtos = [
+      { sku: "001", name: "Produto Principal", qty: 1 },
+    ];
+
+    if (orderbump1) {
+      total += 7.9;
+      produtos.push({ sku: "ob1", name: "OrderBump 1", qty: 1 });
+    }
+    if (orderbump2) {
+      total += 12.9;
+      produtos.push({ sku: "ob2", name: "OrderBump 2", qty: 1 });
+    }
+    if (orderbump3) {
+      total += 14.9;
+      produtos.push({ sku: "ob3", name: "OrderBump 3", qty: 1 });
+    }
+    if (orderbump4) {
+      total += 12.9;
+      produtos.push({ sku: "ob4", name: "OrderBump 4", qty: 1 });
+    }
+
+    // --- 3️⃣ Criar pedido ---
+    const pedido = await postJSON(
+      "https://admin.appmax.com.br/api/v3/order",
+      {
+        "access-token": ACCESS_TOKEN,
+        total,
+        products: produtos,
+        customer_id,
+      }
+    );
+
+    const order_id = pedido?.data?.id;
+    if (!order_id) throw new Error("Erro ao criar pedido");
+
+    // --- 4️⃣ Criar pagamento ---
+    let pagamentoData = null;
+
+    if (metodo_pagamento === "pix") {
+      const hoje = new Date();
+      hoje.setDate(hoje.getDate() + 1);
+      const exp = hoje.toISOString().replace("T", " ").substring(0, 19);
+
+      const pagamento = await postJSON(
+        "https://admin.appmax.com.br/api/v3/payment/pix",
+        {
+          "access-token": ACCESS_TOKEN,
+          cart: { order_id },
+          customer: { customer_id },
+          payment: {
+            pix: {
+              document_number: cpf,
+              expiration_date: exp,
+            },
+          },
+        }
+      );
+      pagamentoData = pagamento?.data?.pix_emv || null;
+    } else if (metodo_pagamento === "credito" && cartao) {
+      const pagamento = await postJSON(
+        "https://admin.appmax.com.br/api/v3/payment/creditcard",
+        {
+          "access-token": ACCESS_TOKEN,
+          cart: { order_id },
+          customer: { customer_id },
+          payment: {
+            CreditCard: {
+              number: cartao.number,
+              cvv: cartao.cvv,
+              month: cartao.month,
+              year: cartao.year,
+              document_number: cpf,
+              name: cartao.name || nome,
+              installments: cartao.installments || 1,
+              soft_descriptor: "CANECA",
+            },
+          },
+        }
+      );
+      pagamentoData = pagamento?.data || null;
+    }
+
+    return res.json({
+      message: "Pedido criado com sucesso",
+      customer_id,
+      order_id,
+      pagamento: pagamentoData,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
