@@ -350,6 +350,7 @@ app.post("/criar-pedido", async (req, res) => {
       orderbump2,
       orderbump3,
       orderbump4,
+      orderbump5,
       cartao, // se for crédito: { number, cvv, month, year, name, installments }
     } = req.body;
 
@@ -390,8 +391,12 @@ app.post("/criar-pedido", async (req, res) => {
       produtos.push({ sku: "ob3", name: "OrderBump 3", qty: 1 });
     }
     if (orderbump4) {
-      total += 12.9;
+      total += 9.9;
       produtos.push({ sku: "ob4", name: "OrderBump 4", qty: 1 });
+    }
+    if (orderbump5) {
+      total += 12.9;
+      produtos.push({ sku: "ob4", name: "OrderBump 5", qty: 1 });
     }
 
     // --- 3️⃣ Criar pedido ---
@@ -431,6 +436,7 @@ app.post("/criar-pedido", async (req, res) => {
         }
       );
       pagamentoData = pagamento?.data?.pix_emv || null;
+      let base64 = pagamento?.data?.pix_qrcode || null;
     } else if (metodo_pagamento === "credito" && cartao) {
       const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/credit-card", {
   method: "POST",
@@ -477,6 +483,7 @@ const pagamento = await pagamentoRes.json();
       customer_id,
       order_id,
       pagamento: pagamentoData,
+      base64
     });
   } catch (err) {
     console.error(err);
