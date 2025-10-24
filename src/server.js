@@ -415,6 +415,7 @@ app.post("/criar-pedido", async (req, res) => {
 
     // --- 4️⃣ Criar pagamento ---
     let pagamentoData = null;
+    let base64 = null;
 
     if (metodo_pagamento === "pix") {
       const hoje = new Date();
@@ -436,7 +437,7 @@ app.post("/criar-pedido", async (req, res) => {
         }
       );
       pagamentoData = pagamento?.data?.pix_emv || null;
-      let base64 = pagamento?.data?.pix_qrcode || null;
+      base64 = pagamento?.data?.pix_qrcode || null;
     } else if (metodo_pagamento === "credito" && cartao) {
       const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/credit-card", {
   method: "POST",
