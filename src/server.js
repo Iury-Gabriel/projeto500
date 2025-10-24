@@ -332,6 +332,7 @@ async function postJSON(url, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  console.log(res.json());
   return await res.json();
 }
 
