@@ -455,6 +455,7 @@ app.post("/criar-pedido", async (req, res) => {
 });
 
 const pagamento = await pagamentoRes.json();
+      console.log(pagamento);
       if (!pagamentoRes.ok) {
   const errorText = await pagamentoRes.text();
   throw new Error(`Erro ao criar pagamento: ${pagamentoRes.status} - ${errorText}`);
