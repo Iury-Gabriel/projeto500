@@ -436,7 +436,7 @@ app.post("/criar-pedido", async (req, res) => {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    access_token: ACCESS_TOKEN,
+    "access-token": ACCESS_TOKEN,
     cart: { order_id },
     customer: { customer_id },
     payment: {
