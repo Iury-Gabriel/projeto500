@@ -431,26 +431,35 @@ app.post("/criar-pedido", async (req, res) => {
       );
       pagamentoData = pagamento?.data?.pix_emv || null;
     } else if (metodo_pagamento === "credito" && cartao) {
-      const pagamento = await postJSON(
-        "https://admin.appmax.com.br/api/v3/payment/creditcard",
-        {
-          "access-token": ACCESS_TOKEN,
-          cart: { order_id },
-          customer: { customer_id },
-          payment: {
-            CreditCard: {
-              number: cartao.number,
-              cvv: cartao.cvv,
-              month: cartao.month,
-              year: cartao.year,
-              document_number: cpf,
-              name: cartao.name || nome,
-              installments: cartao.installments || 1,
-              soft_descriptor: "CANECA",
-            },
-          },
-        }
-      );
+      const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/creditcard", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    "access-token": ACCESS_TOKEN,
+    cart: { order_id },
+    customer: { customer_id },
+    payment: {
+      CreditCard: {
+        number: cartao.number,
+        cvv: cartao.cvv,
+        month: cartao.month,
+        year: cartao.year,
+        document_number: cpf,
+        name: cartao.name || nome,
+        installments: cartao.installments || 1,
+        soft_descriptor: "CANECA"
+      }
+    }
+  })
+});
+
+const pagamento = await pagamentoRes.json();
+      if (!pagamentoRes.ok) {
+  const errorText = await pagamentoRes.text();
+  throw new Error(`Erro ao criar pagamento: ${pagamentoRes.status} - ${errorText}`);
+}
+
+
       pagamentoData = pagamento?.data || null;
     }
 
