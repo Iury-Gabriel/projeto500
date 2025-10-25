@@ -255,6 +255,36 @@ app.post('/canecas/verificaremail', async (req, res) => {
   }
 });
 
+app.post('/canecas/criar', async (req, res) => {
+  try {
+    const { name, email, produto1, produto2, produto3, produto4, produto5 } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name e email são obrigatórios" });
+    }
+
+    const novaCaneca = await prismaClient.canecas.create({
+      data: {
+        name,
+        email,
+        produto1,
+        produto2,
+        produto3,
+        produto4,
+        produto5
+      }
+    });
+
+    res.status(201).json(novaCaneca);
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      // Prisma erro de unique constraint
+      return res.status(400).json({ error: "Email já cadastrado" });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/canecas/processar-compra', async (req, res) => {
   try {
     const { email, items } = req.body;
@@ -358,6 +388,25 @@ app.post("/criar-pedido", async (req, res) => {
       utm_content,
       utm_term,
     } = req.body;
+
+    const response = await fetch('https://area-de-membros-backend.g8hlwx.easypanel.host/canecas/criar', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: nome,
+      email: email,
+      produto1: orderbump1,
+      produto2: orderbump2,
+      produto3: orderbump3,
+      produto4: orderbump4,
+      produto5: orderbump5
+    })
+    });
+
+    const data = await response.json();
+    console.log(data);
 
     // --- 1️⃣ Criar cliente ---
     const [firstname, ...rest] = nome.split(" ");
