@@ -352,6 +352,11 @@ app.post("/criar-pedido", async (req, res) => {
       orderbump4,
       orderbump5,
       cartao, // se for crédito: { number, cvv, month, year, name, installments }
+      utm_source,
+      utm_campaign,
+      utm_medium,
+      utm_content,
+      utm_term,
     } = req.body;
 
     // --- 1️⃣ Criar cliente ---
@@ -366,6 +371,13 @@ app.post("/criar-pedido", async (req, res) => {
         lastname,
         email,
         telephone: numero,
+        tracking: {
+          utm_source,
+          utm_campaign,
+          utm_medium,
+          utm_content,
+          utm_term
+        }
       }
     );
 
