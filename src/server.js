@@ -276,7 +276,7 @@ app.post('/canecas/criar', async (req, res) => {
     });
 
     res.status(201).json(novaCaneca);
-  } catch (err: any) {
+  } catch (err) {
     if (err.code === 'P2002') {
       // Prisma erro de unique constraint
       return res.status(400).json({ error: "Email já cadastrado" });
