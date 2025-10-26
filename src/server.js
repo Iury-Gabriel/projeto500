@@ -435,10 +435,10 @@ app.post("/criar-pedido", async (req, res) => {
         telephone: numero,
         tracking: {
           utm_source,
-          utm_campaign,
           utm_medium,
-          utm_content,
-          utm_term
+          utm_campaign,
+          utm_term,
+          utm_content
         }
       }
     );
