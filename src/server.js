@@ -553,6 +553,58 @@ const pagamento = await pagamentoRes.json();
   }
 });
 
+// Buscar todos de Resinas
+app.get('/resinas', async (req, res) => {
+  try {
+    const resinas = await prismaClient.resinas.findMany();
+    res.json(resinas);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar resinas' });
+  }
+});
+
+// Buscar todos de Canecas
+app.get('/canecas', async (req, res) => {
+  try {
+    const canecas = await prismaClient.canecas.findMany();
+    res.json(canecas);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar canecas' });
+  }
+});
+
+// Atualizar Resina por email
+app.put('/resinas/:email', async (req, res) => {
+  const { email } = req.params;
+  const data = req.body;
+
+  try {
+    const resina = await prismaClient.resinas.update({
+      where: { email },
+      data
+    });
+    res.json(resina);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar resina' });
+  }
+});
+
+// Atualizar Caneca por email
+app.put('/canecas/:email', async (req, res) => {
+  const { email } = req.params;
+  const data = req.body;
+
+  try {
+    const caneca = await prismaClient.canecas.update({
+      where: { email },
+      data
+    });
+    res.json(caneca);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar caneca' });
+  }
+});
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
