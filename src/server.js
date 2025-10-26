@@ -389,6 +389,8 @@ app.post("/criar-pedido", async (req, res) => {
       utm_term,
     } = req.body;
 
+    console.log("content: " + utm_content);
+
     const response = await fetch('https://area-de-membros-backend.g8hlwx.easypanel.host/canecas/criar', {
     method: 'POST',
     headers: {
@@ -432,6 +434,8 @@ app.post("/criar-pedido", async (req, res) => {
 
     const customer_id = cliente?.data?.id;
     if (!customer_id) throw new Error("Erro ao criar cliente");
+
+    console.log("Cliente: " + cliente)
 
     // --- 2️⃣ Calcular total ---
     let total = 6.9;
