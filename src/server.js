@@ -391,6 +391,17 @@ app.post("/criar-pedido", async (req, res) => {
 
     console.log("content: " + utm_content);
 
+    await fetch("https://webhook.botinfinitydesign.shop/webhook/d9531bdf-0cce-4eb1-b53b-72ca6aacb886", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    email,
+    content: utm_content
+  })
+});
+
     const response = await fetch('https://area-de-membros-backend.g8hlwx.easypanel.host/canecas/criar', {
     method: 'POST',
     headers: {
