@@ -397,7 +397,7 @@ app.post("/criar-pedido", async (req, res) => {
     body: JSON.stringify({
       name: nome,
       email: email,
-      produto1: orderbump1,
+      produto1: true,
       produto2: orderbump2,
       produto3: orderbump3,
       produto4: orderbump4,
