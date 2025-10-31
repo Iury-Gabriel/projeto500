@@ -568,6 +568,172 @@ const pagamento = await pagamentoRes.json();
   }
 });
 
+app.post("/criar-pedido-ferro", async (req, res) => {
+  try {
+    const {
+      nome,
+      email,
+      cpf,
+      numero,
+      metodo_pagamento, // "pix" ou "credito"
+      orderbump1,
+      orderbump2,
+      cartao, // se for crédito: { number, cvv, month, year, name, installments }
+      utm_source,
+      utm_campaign,
+      utm_medium,
+      utm_content,
+      utm_term,
+    } = req.body;
+
+    console.log("content: " + utm_content);
+
+    await fetch("https://webhook.botinfinitydesign.shop/webhook/d9531bdf-0cce-4eb1-b53b-72ca6aacb886", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    email,
+    content: utm_content
+  })
+});
+
+    // --- 1️⃣ Criar cliente ---
+    const [firstname, ...rest] = nome.split(" ");
+    const lastname = rest.join(" ") || firstname;
+
+    const cliente = await postJSON(
+      "https://admin.appmax.com.br/api/v3/customer",
+      {
+        "access-token": ACCESS_TOKEN,
+        firstname,
+        lastname,
+        email,
+        telephone: numero,
+        tracking: {
+          utm_source,
+          utm_medium,
+          utm_campaign,
+          utm_term,
+          utm_content
+        }
+      }
+    );
+
+    const customer_id = cliente?.data?.id;
+    if (!customer_id) throw new Error("Erro ao criar cliente");
+
+    console.log("Cliente: " + cliente)
+
+    // --- 2️⃣ Calcular total ---
+    let total = 19.9;
+    const produtos = [
+      { sku: "001", name: "Produto Principal", qty: 1 },
+    ];
+
+    if (orderbump1) {
+      total += 12.9;
+      produtos.push({ sku: "ob1", name: "OrderBump 1", qty: 1 });
+    }
+    if (orderbump2) {
+      total += 6.9;
+      produtos.push({ sku: "ob2", name: "OrderBump 2", qty: 1 });
+    }
+
+    // --- 3️⃣ Criar pedido ---
+    const pedido = await postJSON(
+      "https://admin.appmax.com.br/api/v3/order",
+      {
+        "access-token": ACCESS_TOKEN,
+        total,
+        products: produtos,
+        customer_id,
+      }
+    );
+
+    const order_id = pedido?.data?.id;
+    if (!order_id) throw new Error("Erro ao criar pedido");
+
+    // --- 4️⃣ Criar pagamento ---
+    let pagamentoData = null;
+    let base64 = null;
+
+    if (metodo_pagamento === "pix") {
+      const hoje = new Date();
+      hoje.setDate(hoje.getDate() + 1);
+      const exp = hoje.toISOString().replace("T", " ").substring(0, 19);
+
+      const pagamento = await postJSON(
+        "https://admin.appmax.com.br/api/v3/payment/pix",
+        {
+          "access-token": ACCESS_TOKEN,
+          cart: { order_id },
+          customer: { customer_id },
+          payment: {
+            pix: {
+              document_number: cpf,
+              expiration_date: exp,
+            },
+          },
+        }
+      );
+      pagamentoData = pagamento?.data?.pix_emv || null;
+      base64 = pagamento?.data?.pix_qrcode || null;
+    } else if (metodo_pagamento === "credito" && cartao) {
+      const pagamentoRes = await fetch("https://admin.appmax.com.br/api/v3/payment/credit-card", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    "access-token": ACCESS_TOKEN,
+    cart: { order_id },
+    customer: { customer_id },
+    payment: {
+      CreditCard: {
+        number: cartao.number,
+        cvv: cartao.cvv,
+        month: cartao.month,
+        year: cartao.year,
+        document_number: cpf,
+        name: nome,
+        installments: 1,
+        soft_descriptor: "CANECA"
+      }
+    }
+  })
+});
+      console.log(order_id),
+      console.log(customer_id);
+      console.log(cartao);
+      console.log(cpf);
+      console.log(nome);
+
+
+
+const pagamento = await pagamentoRes.json();
+      console.log(pagamento);
+      if (!pagamentoRes.ok) {
+  const errorText = await pagamentoRes.text();
+  throw new Error(`Erro ao criar pagamento: ${pagamentoRes.status} - ${errorText}`);
+}
+
+
+      pagamentoData = pagamento?.data || null;
+    }
+
+    return res.json({
+      message: "Pedido criado com sucesso",
+      customer_id,
+      order_id,
+      pagamento: pagamentoData,
+      base64
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 // Buscar todos de Resinas
 app.get('/resinas', async (req, res) => {
   try {
